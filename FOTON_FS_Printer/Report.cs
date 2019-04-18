@@ -89,7 +89,7 @@ namespace FOTON_FS_Printer {
                                     totalResult = false;
                                 }
                             } else {
-                                if (dicData[item.Value] == "O") {
+                                if (dicData[item.Value].Contains('O') || dicData[item.Value].Contains('o')) {
                                     dicData[item.Value] = "OK";
                                 } else {
                                     dicData[item.Value] = "不合格";
