@@ -53,18 +53,28 @@ namespace FOTON_FS_Printer {
         string Str2Degree(string strOri) {
             string ret = "";
             string minute = "";
-            string[] arr = strOri.Split('.');
-            if (arr.Length > 1) {
-                double.TryParse("." + arr[1], out double result);
-                result *= 60;
-                minute = result.ToString() + "'";
+            if (strOri.Contains("°")) {
+                ret = strOri.Replace(".", "'");
+            } else {
+                string[] arr = strOri.Split('.');
+                if (arr.Length > 1) {
+                    double.TryParse("." + arr[1], out double result);
+                    result = result * 60 + 0.5;
+                    int iRet = (int)result;
+                    minute = iRet.ToString() + "'";
+                }
+                ret = arr[0] + "°" + minute;
             }
-            ret = arr[0] + "°" + minute;
             return ret;
+        }
+
+        public string testDegree(string str) {
+            return Str2Degree(str);
         }
 
         string ReplaceData(string ori, Dictionary<string, string> dicData) {
             string ret = ori;
+            bool totalResult = true;
             foreach (var item in Cfg.ColumnDic) {
                 if (item.Value == "" || !dicData.ContainsKey(item.Value)) {
                     ret = ret.Replace("$" + item.Key + "$", "-");
@@ -76,12 +86,14 @@ namespace FOTON_FS_Printer {
                                     dicData[item.Value] = "OK";
                                 } else {
                                     dicData[item.Value] = "不合格";
+                                    totalResult = false;
                                 }
                             } else {
                                 if (dicData[item.Value] == "O") {
                                     dicData[item.Value] = "OK";
                                 } else {
                                     dicData[item.Value] = "不合格";
+                                    totalResult = false;
                                 }
                             }
                         }
@@ -92,6 +104,11 @@ namespace FOTON_FS_Printer {
                         }
                     }
                     ret = ret.Replace("$" + item.Key + "$", dicData[item.Value]);
+                    if (totalResult) {
+                        ret = ret.Replace("$TestResult$", "合格");
+                    } else {
+                        ret = ret.Replace("$TestResult$", "不合格");
+                    }
                 }
             }
             return ret;

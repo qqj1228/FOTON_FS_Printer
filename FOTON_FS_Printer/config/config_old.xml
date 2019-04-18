@@ -4,27 +4,28 @@
     <NewTestLine>0</NewTestLine>
   </Main>
   <SerialPort>
-    <PortName>COM3</PortName>
+    <PortName>
+    </PortName>
     <BaudRate>9600</BaudRate>
     <Parity>0</Parity>
     <DataBits>8</DataBits>
     <StopBits>1</StopBits>
   </SerialPort>
   <DB>
-    <IP>127.0.0.1</IP>
+    <IP>10.122.129.166</IP>
     <Port>1433</Port>
     <UserID>sa</UserID>
-    <Pwd>sh49</Pwd>
+    <Pwd>12345678</Pwd>
     <VehicleInfo>FS_Vehicleinfo</VehicleInfo>
     <LastWorkStation>FS_Braking</LastWorkStation>
     <ColumnConfig>old_line.xml</ColumnConfig>
-    <RepeatColumn>Result</RepeatColumn>
+    <RepeatColumn>RESULT</RepeatColumn>
   </DB>
   <ExDB>
     <DB_0>
       <Name>FS_EOL_TESTER</Name>
-      <LastID>0</LastID>
-      <TableList>FS_Vehicleinfo,FS_ZG_ABS,WQ_DIESEL_PRODUCT,DD_HEADLIGHT,SL_FOURWHEEL,FS_Braking,FS_ZDT_DETECTION,FS_CHCODE,FS_MES_Vehicle_TEST,FS_MES_SL_TEST,FS_MES_DD_TEST,FS_MES_PF_TEST,FS_MES_Other_TEST</TableList>
+      <LastID>52466</LastID>
+      <TableList>FS_MES_Vehicle_TEST,FS_MES_SL_TEST,FS_MES_DD_TEST,FS_MES_PF_TEST,FS_MES_Other_TEST,FS_Vehicleinfo,FS_Braking</TableList>
     </DB_0>
   </ExDB>
 </Config>

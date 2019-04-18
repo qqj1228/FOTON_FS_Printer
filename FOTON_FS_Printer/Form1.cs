@@ -48,45 +48,47 @@ namespace FOTON_FS_Printer {
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j] == cfg.DB.LastWorkStation) {
                         string[,] rs = db.GetNewRecords(cfg.ExDBList[i].TableList[j], i);
-                        int rowNum = rs.GetLength(0);
-                        if (rowNum > 0) {
-                            string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
-                            // 计算ID, VIN字段索引值
-                            int IDIndex = 0;
-                            int VINIndex = 1;
-                            int iCount = 0;
-                            for (int k = 0; k < col.Length && iCount <= 2; k++) {
-                                if (col[k] == cfg.ColumnDic["ID"]) {
-                                    IDIndex = k;
-                                    ++iCount;
-                                } else if (col[k] == cfg.ColumnDic["VIN"]) {
-                                    VINIndex = k;
-                                    ++iCount;
+                        if (rs != null) {
+                            int rowNum = rs.GetLength(0);
+                            if (rowNum > 0) {
+                                string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
+                                // 计算ID, VIN字段索引值
+                                int IDIndex = 0;
+                                int VINIndex = 1;
+                                int iCount = 0;
+                                for (int k = 0; k < col.Length && iCount <= 2; k++) {
+                                    if (col[k] == cfg.ColumnDic["ID"]) {
+                                        IDIndex = k;
+                                        ++iCount;
+                                    } else if (col[k] == cfg.ColumnDic["VIN"]) {
+                                        VINIndex = k;
+                                        ++iCount;
+                                    }
                                 }
-                            }
-                            // 将最新记录的VIN号填入UI中
-                            this.textBoxVIN.Text = rs[rowNum - 1, VINIndex];
-                            string[] vi = db.GetVehicleInfo(rs[rowNum - 1, VINIndex]);
-                            this.textBoxVehicleCode.Text = vi[0];
-                            this.textBoxVehicleType.Text = vi[1];
-                            this.textBoxEngineCode.Text = vi[2];
+                                // 将最新记录的VIN号填入UI中
+                                this.textBoxVIN.Text = rs[rowNum - 1, VINIndex];
+                                string[] vi = db.GetVehicleInfo(rs[rowNum - 1, VINIndex]);
+                                this.textBoxVehicleCode.Text = vi[0];
+                                this.textBoxVehicleType.Text = vi[1];
+                                this.textBoxEngineCode.Text = vi[2];
 
-                            // 若vi项均不为空的话就自动显示检测结果报表
-                            if (vi[0] != "" && vi[1] != "" && vi[2] != "") {
-                                string VIN = rs[rowNum - 1, VINIndex];
-                                Dictionary<string, string> dic = db.GetVehicleResult(VIN);
-                                if (dic.Count > 0) {
-                                    report.WriteReport(VIN, dic);
-                                    Process.Start(report.GetReportFile(VIN));
-                                } else {
-                                    MessageBox.Show("该VIN号车辆无检测结果数据！", "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                // 若vi项均不为空的话就自动显示检测结果报表
+                                if (vi[0] != "" && vi[1] != "" && vi[2] != "") {
+                                    string VIN = rs[rowNum - 1, VINIndex];
+                                    Dictionary<string, string> dic = db.GetVehicleResult(VIN);
+                                    if (dic.Count > 0) {
+                                        report.WriteReport(VIN, dic);
+                                        Process.Start(report.GetReportFile(VIN));
+                                    } else {
+                                        MessageBox.Show("该VIN号车辆无检测结果数据！", "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    }
                                 }
+                                // 修改LastID值
+                                ExportDBConfig TempExDB = cfg.ExDBList[i];
+                                int.TryParse(rs[rowNum - 1, IDIndex], out int result);
+                                TempExDB.LastID = result;
+                                cfg.ExDBList[i] = TempExDB;
                             }
-                            // 修改LastID值
-                            ExportDBConfig TempExDB = cfg.ExDBList[i];
-                            int.TryParse(rs[rowNum - 1, IDIndex], out int result);
-                            TempExDB.LastID = result;
-                            cfg.ExDBList[i] = TempExDB;
                         }
                     }
                 }
@@ -121,9 +123,11 @@ namespace FOTON_FS_Printer {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
                     rs = db.GetLikeRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                    int length = rs.GetLength(0);
-                    for (int k = 0; k < length; k++) {
-                        VINSet.Add(rs[k, 0]);
+                    if (rs != null) {
+                        int length = rs.GetLength(0);
+                        for (int k = 0; k < length; k++) {
+                            VINSet.Add(rs[k, 0]);
+                        }
                     }
                 }
             }
@@ -132,6 +136,9 @@ namespace FOTON_FS_Printer {
             foreach (string item in VINSet) {
                 listBox1.Items.Add(item);
             }
+
+            //string str = report.testDegree(this.textBoxVehicleCode.Text);
+            //this.textBoxVehicleType.Text = str;
         }
 
         private void buttonInput_Click(object sender, EventArgs e) {
@@ -149,13 +156,15 @@ namespace FOTON_FS_Printer {
                             };
 
                             string[,] rs = db.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                            if (rs.GetLength(0) > 0) {
-                                KeyValuePair<string, string> pair = new KeyValuePair<string, string>(cfg.ColumnDic["VIN"], VIN);
-                                db.UpdateRecord(cfg.ExDBList[i].TableList[j], pair, dicInfo, i);
-                                MessageBox.Show("成功更新数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            } else {
-                                db.InsertRecord(cfg.ExDBList[i].TableList[j], dicInfo, i);
-                                MessageBox.Show("成功插入数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (rs != null) {
+                                if (rs.GetLength(0) > 0) {
+                                    KeyValuePair<string, string> pair = new KeyValuePair<string, string>(cfg.ColumnDic["VIN"], VIN);
+                                    db.UpdateRecord(cfg.ExDBList[i].TableList[j], pair, dicInfo, i);
+                                    MessageBox.Show("成功更新数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                } else {
+                                    db.InsertRecord(cfg.ExDBList[i].TableList[j], dicInfo, i);
+                                    MessageBox.Show("成功插入数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
                             }
                         }
                     }

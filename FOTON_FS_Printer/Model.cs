@@ -313,6 +313,7 @@ namespace FOTON_FS_Printer {
         }
 
         string[,] SelectDB(string strSQL, int DBIndex) {
+            string[,] records = null;
             try {
                 int count = 0;
                 List<string[]> rowList;
@@ -335,7 +336,7 @@ namespace FOTON_FS_Printer {
                         rowList.Add(items);
                     }
                 }
-                string[,] records = new string[rowList.Count, count];
+                records = new string[rowList.Count, count];
                 for (int i = 0; i < rowList.Count; i++) {
                     for (int j = 0; j < count; j++) {
                         records[i, j] = rowList[i][j];
@@ -348,7 +349,7 @@ namespace FOTON_FS_Printer {
                 Console.ResetColor();
                 log.TraceError(e.Message);
             }
-            return new string[,] { { "" }, { "" } };
+            return records;
         }
 
         public string[,] GetLikeRecords(string strTableName, string strColumn, string strValue, int DBIndex) {
@@ -394,15 +395,17 @@ namespace FOTON_FS_Printer {
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j] == cfg.DB.VehicleInfo) {
                         string[,] rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                        if (rs.GetLength(0) > 0) {
-                            string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
-                            for (int k = 0; k < col.Length; k++) {
-                                if (col[k] == cfg.ColumnDic["ProductCode"]) {
-                                    ret[0] = rs[0, k];
-                                } else if (col[k] == cfg.ColumnDic["VehicleType"]) {
-                                    ret[1] = rs[0, k];
-                                } else if (col[k] == cfg.ColumnDic["EngineCode"]) {
-                                    ret[2] = rs[0, k];
+                        if (rs != null) {
+                            if (rs.GetLength(0) > 0) {
+                                string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
+                                for (int k = 0; k < col.Length; k++) {
+                                    if (col[k] == cfg.ColumnDic["ProductCode"]) {
+                                        ret[0] = rs[0, k];
+                                    } else if (col[k] == cfg.ColumnDic["VehicleType"]) {
+                                        ret[1] = rs[0, k];
+                                    } else if (col[k] == cfg.ColumnDic["EngineCode"]) {
+                                        ret[2] = rs[0, k];
+                                    }
                                 }
                             }
                         }
@@ -419,32 +422,38 @@ namespace FOTON_FS_Printer {
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j] == cfg.DB.VehicleInfo) {
                         string[,] VINRs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                        if (VINRs.GetLength(0) <= 0) {
+                        if (VINRs != null) {
+                            if (VINRs.GetLength(0) <= 0) {
+                                return dic;
+                            }
+                        } else {
                             return dic;
                         }
                     }
                     string[,] rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
                     string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
-                    if (rs.GetLength(0) > 0) {
-                        for (int n = 0; n < rs.GetLength(0); n++) {
-                            for (int k = 0; k < col.Length; k++) {
-                                for (int m = 0; m < cfg.DB.RepeatColumn.Count; m++) {
-                                    if (cfg.DB.RepeatColumn[m] == col[k]) {
-                                        string colName = cfg.ExDBList[i].TableList[j] + "." + col[k];
-                                        if (dic.ContainsKey(colName)) {
-                                            if (rs[n, k] != "") {
-                                                dic[colName] = rs[n, k];
+                    if (rs != null) {
+                        if (rs.GetLength(0) > 0) {
+                            for (int n = 0; n < rs.GetLength(0); n++) {
+                                for (int k = 0; k < col.Length; k++) {
+                                    for (int m = 0; m < cfg.DB.RepeatColumn.Count; m++) {
+                                        if (cfg.DB.RepeatColumn[m] == col[k]) {
+                                            string colName = cfg.ExDBList[i].TableList[j] + "." + col[k];
+                                            if (dic.ContainsKey(colName)) {
+                                                if (rs[n, k] != "") {
+                                                    dic[colName] = rs[n, k];
+                                                }
+                                            } else {
+                                                dic.Add(colName, rs[n, k]);
                                             }
                                         } else {
-                                            dic.Add(colName, rs[n, k]);
-                                        }
-                                    } else {
-                                        if (dic.ContainsKey(col[k])) {
-                                            if (rs[n, k] != "") {
-                                                dic[col[k]] = rs[n, k];
+                                            if (dic.ContainsKey(col[k])) {
+                                                if (rs[n, k] != "") {
+                                                    dic[col[k]] = rs[n, k];
+                                                }
+                                            } else {
+                                                dic.Add(col[k], rs[n, k]);
                                             }
-                                        } else {
-                                            dic.Add(col[k], rs[n, k]);
                                         }
                                     }
                                 }
