@@ -104,12 +104,12 @@ namespace FOTON_FS_Printer {
                         }
                     }
                     ret = ret.Replace("$" + item.Key + "$", dicData[item.Value]);
-                    if (totalResult) {
-                        ret = ret.Replace("$TestResult$", "合格");
-                    } else {
-                        ret = ret.Replace("$TestResult$", "不合格");
-                    }
                 }
+            }
+            if (totalResult) {
+                ret = ret.Replace("$TestResult$", "合格");
+            } else {
+                ret = ret.Replace("$TestResult$", "不合格");
             }
             return ret;
         }

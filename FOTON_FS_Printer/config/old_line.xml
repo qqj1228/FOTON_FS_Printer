@@ -9,7 +9,6 @@
   <TestTime>TESTTIME</TestTime>
   <BodyColor>COLOR</BodyColor>
   <TestNumber>TESTNUMBER</TestNumber>
-  <TestResult></TestResult>
   <!-- WA -->
   <FL_Toe>FRONTLTOE</FL_Toe>
   <FL_Toe_Range>FRONTLTOESTANDARD</FL_Toe_Range>
@@ -159,6 +158,6 @@
   <RGAFSG>RGAFSG</RGAFSG>
   <TOTSPOR>TOTSPOR</TOTSPOR>
   <!-- Result Field -->
-  <ResultField>TestResult,WAResult,HLAResult,HornResult,SpeedMeterResult,BrakeResult,ABS_DTC_Des,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
-  <DegreeFormat>FL_Toe,FL_Toe_Range,FR_Toe,FR_Toe_Range,FT_Toe,FL_Camber,FL_Camber_Range,FR_Camber,FR_Camber_Range,FC_Camber,FC_Camber_Range,FL_Caster,FL_Caster_Range,FR_Caster,FR_Caster_Range,FC_Caster,FC_Caster_Range,Thrust_Ang,Thrust_Ang_Range,Symmetry,Symmetry_Range,SWL,SWL_Range,LTAO,LTAO_Range,RTAO,RTAO_Range,LTAI,LTAI_Range,RTAI,RTAI_Range,</DegreeFormat>
+  <ResultField>TestResult,WAResult,HLAResult,HornResult,CH_RESULT,SpeedMeterResult,BrakeResult,ABS_DTC_Des,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
+  <DegreeFormat>FL_Toe,FL_Toe_Range,FR_Toe,FR_Toe_Range,FT_Toe,FT_Toe_Range,FL_Camber,FL_Camber_Range,FR_Camber,FR_Camber_Range,FC_Camber,FC_Camber_Range,FL_Caster,FL_Caster_Range,FR_Caster,FR_Caster_Range,FC_Caster,FC_Caster_Range,Thrust_Ang,Thrust_Ang_Range,Symmetry,Symmetry_Range,SWL,SWL_Range,LTAO,LTAO_Range,RTAO,RTAO_Range,LTAI,LTAI_Range,RTAI,RTAI_Range,</DegreeFormat>
 </Column>
