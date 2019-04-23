@@ -51,9 +51,9 @@
   <LLowInten>LowIntensity_Left</LLowInten>
   <LLowVer>LowVerDeviation_Left</LLowVer>
   <LLowHor>LowHorDeviation_Left</LLowHor>
-  <LSHighInten></LSHighInten>
-  <LSHighVer></LSHighVer>
-  <LSHighHor></LSHighHor>
+  <LSHighInten>High2Intensity_Left</LSHighInten>
+  <LSHighVer>High2VerDeviation_Left</LSHighVer>
+  <LSHighHor>High2HorDeviation_Left</LSHighHor>
   <LSLowInten></LSLowInten>
   <LSLowVer></LSLowVer>
   <LSLowHor></LSLowHor>
@@ -63,32 +63,32 @@
   <RLowInten>LowIntensity_Right</RLowInten>
   <RLowVer>LowVerDeviation_Right</RLowVer>
   <RLowHor>LowHorDeviation_Right</RLowHor>
-  <RSHighInten></RSHighInten>
-  <RSHighVer></RSHighVer>
-  <RSHighHor></RSHighHor>
+  <RSHighInten>High2Intensity_Right</RSHighInten>
+  <RSHighVer>High2VerDeviation_Right</RSHighVer>
+  <RSHighHor>High2HorDeviation_Right</RSHighHor>
   <RSLowInten></RSLowInten>
   <RSLowVer></RSLowVer>
   <RSLowHor></RSLowHor>
   <HLAResult>TestResultHLA.Passed</HLAResult>
   <!-- Emission -->
-  <AvgLCO></AvgLCO>
-  <AvgLHC></AvgLHC>
-  <AvgLNO></AvgLNO>
+  <AvgLCO>LOW_CO</AvgLCO>
+  <AvgLHC>LOW_HC</AvgLHC>
+  <AvgLNO>LOW_NO</AvgLNO>
   <AvgLO2></AvgLO2>
-  <AvgLCO2></AvgLCO2>
-  <AvgLLAM></AvgLLAM>
-  <AvgHCO></AvgHCO>
-  <AvgHHC></AvgHHC>
-  <AvgHNO></AvgHNO>
+  <AvgLCO2>LOW_CO2</AvgLCO2>
+  <AvgLLAM>LOW_LAMBDA</AvgLLAM>
+  <AvgHCO>HIGH_CO</AvgHCO>
+  <AvgHHC>HIGH_HC</AvgHHC>
+  <AvgHNO>HIGH_NO</AvgHNO>
   <AvgHO2></AvgHO2>
-  <AvgHCO2></AvgHCO2>
-  <AvgHLAM></AvgHLAM>
-  <MaxK1></MaxK1>
-  <MaxK2></MaxK2>
-  <MaxK3></MaxK3>
+  <AvgHCO2>HIGH_CO2</AvgHCO2>
+  <AvgHLAM>EVAL_HIGH_LAMBDA</AvgHLAM>
+  <MaxK1>MaxK1</MaxK1>
+  <MaxK2>MaxK2</MaxK2>
+  <MaxK3>MaxK3</MaxK3>
   <MaxK4></MaxK4>
-  <AvgMaxK></AvgMaxK>
-  <EmissionResult></EmissionResult>
+  <AvgMaxK>AvgMaxK</AvgMaxK>
+  <EmissionResult>EMISSION_TOTAL_VALUATION</EmissionResult>
   <!-- Horn -->
   <Horn>SoundLevel</Horn>
   <HornResult>Horn_Test.Passed</HornResult>
@@ -141,7 +141,7 @@
   <ABS_ValveFR>FR_IsOK</ABS_ValveFR>
   <ABS_ValveRL>RL_IsOK</ABS_ValveRL>
   <ABS_ValveRR>RR_IsOK</ABS_ValveRR>
-  <ABSResult>ABSResult</ABSResult>
+  <ABSResult>Static_ABS.Passed</ABSResult>
   <!-- Others -->
   <FWP>FWP</FWP>
   <Block>BLOCK</Block>

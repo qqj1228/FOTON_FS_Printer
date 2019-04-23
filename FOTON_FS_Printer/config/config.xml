@@ -1,31 +1,55 @@
 <Config>
   <Main>
     <Interval>5</Interval>
-    <NewTestLine>0</NewTestLine>
+    <NewTestLine>1</NewTestLine>
   </Main>
   <SerialPort>
-    <PortName>
-    </PortName>
+    <PortName></PortName>
     <BaudRate>9600</BaudRate>
     <Parity>0</Parity>
     <DataBits>8</DataBits>
     <StopBits>1</StopBits>
   </SerialPort>
   <DB>
-    <IP>10.122.129.166</IP>
+    <IP>192.168.71.10</IP>
     <Port>1433</Port>
     <UserID>sa</UserID>
     <Pwd>12345678</Pwd>
-    <VehicleInfo>FS_Vehicleinfo</VehicleInfo>
-    <LastWorkStation>FS_Braking</LastWorkStation>
-    <ColumnConfig>old_line.xml</ColumnConfig>
-    <RepeatColumn>RESULT</RepeatColumn>
+    <VehicleInfo>VehicleInfo</VehicleInfo>
+    <LastWorkStation>Brake_Test</LastWorkStation>
+    <ColumnConfig>new_line.xml</ColumnConfig>
+    <RepeatColumn>Passed</RepeatColumn>
   </DB>
   <ExDB>
     <DB_0>
-      <Name>FS_EOL_TESTER</Name>
-      <LastID>52466</LastID>
-      <TableList>FS_MES_Vehicle_TEST,FS_MES_SL_TEST,FS_MES_DD_TEST,FS_MES_PF_TEST,FS_MES_Other_TEST,FS_Vehicleinfo,FS_Braking</TableList>
+      <Name>EOL_FOTON_ABS</Name>
+      <LastID>0</LastID>
+      <TableList>ABS_Valve,Horn_Test,Speed_Check,Static_ABS</TableList>
     </DB_0>
+    <DB_1>
+      <Name>EOL_FOTON_LS</Name>
+      <LastID>0</LastID>
+      <TableList>Brake_Test</TableList>
+    </DB_1>
+    <DB_2>
+      <Name>EOL_FOTON_WA</Name>
+      <LastID>0</LastID>
+      <TableList>TestResultWA</TableList>
+    </DB_2>
+    <DB_3>
+      <Name>EOL_FOTON_HLA</Name>
+      <LastID>0</LastID>
+      <TableList>TestResultHLA</TableList>
+    </DB_3>
+    <DB_4>
+      <Name>EOL_FOTON_INFO</Name>
+      <LastID>0</LastID>
+      <TableList>VehicleInfo</TableList>
+    </DB_4>
+    <DB_5>
+      <Name>EOL_FOTON_GAS</Name>
+      <LastID>0</LastID>
+      <TableList>DieselTotal,EmissionTotal</TableList>
+    </DB_5>
   </ExDB>
 </Config>

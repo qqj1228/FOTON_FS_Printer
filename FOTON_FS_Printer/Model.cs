@@ -366,6 +366,13 @@ namespace FOTON_FS_Printer {
             return strArr;
         }
 
+        public string[,] GetRecordsOneCol(string strTableName, string strSelectCol, string strWhereCol, string strValue, int DBIndex) {
+            string strSQL = "select " + strSelectCol + " from " + strTableName + " where " + strWhereCol + " = '" + strValue + "'";
+            log.TraceInfo("SQL: " + strSQL);
+            string[,] strArr = SelectDB(strSQL, DBIndex);
+            return strArr;
+        }
+
         public string[,] GetNewRecords(string strTableName, int index) {
             string strLastID = "";
             if (cfg.ExDBList[index].LastID >= 0) {
@@ -464,5 +471,6 @@ namespace FOTON_FS_Printer {
             }
             return dic;
         }
+
     }
 }

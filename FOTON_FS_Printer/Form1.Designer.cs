@@ -80,6 +80,7 @@
             this.textBoxVIN.Name = "textBoxVIN";
             this.textBoxVIN.Size = new System.Drawing.Size(200, 21);
             this.textBoxVIN.TabIndex = 4;
+            this.textBoxVIN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // textBoxVehicleCode
             // 
@@ -89,6 +90,7 @@
             this.textBoxVehicleCode.Name = "textBoxVehicleCode";
             this.textBoxVehicleCode.Size = new System.Drawing.Size(200, 21);
             this.textBoxVehicleCode.TabIndex = 5;
+            this.textBoxVehicleCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // textBoxVehicleType
             // 
@@ -98,6 +100,7 @@
             this.textBoxVehicleType.Name = "textBoxVehicleType";
             this.textBoxVehicleType.Size = new System.Drawing.Size(200, 21);
             this.textBoxVehicleType.TabIndex = 6;
+            this.textBoxVehicleType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // textBoxEngineCode
             // 
@@ -107,6 +110,7 @@
             this.textBoxEngineCode.Name = "textBoxEngineCode";
             this.textBoxEngineCode.Size = new System.Drawing.Size(200, 21);
             this.textBoxEngineCode.TabIndex = 7;
+            this.textBoxEngineCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
             // 
             // buttonSearch
             // 

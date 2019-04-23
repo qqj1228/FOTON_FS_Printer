@@ -4,17 +4,17 @@
     <NewTestLine>1</NewTestLine>
   </Main>
   <SerialPort>
-    <PortName>COM3</PortName>
+    <PortName></PortName>
     <BaudRate>9600</BaudRate>
     <Parity>0</Parity>
     <DataBits>8</DataBits>
     <StopBits>1</StopBits>
   </SerialPort>
   <DB>
-    <IP>127.0.0.1</IP>
+    <IP>192.168.71.10</IP>
     <Port>1433</Port>
     <UserID>sa</UserID>
-    <Pwd>sh49</Pwd>
+    <Pwd>12345678</Pwd>
     <VehicleInfo>VehicleInfo</VehicleInfo>
     <LastWorkStation>Brake_Test</LastWorkStation>
     <ColumnConfig>new_line.xml</ColumnConfig>
@@ -24,7 +24,7 @@
     <DB_0>
       <Name>EOL_FOTON_ABS</Name>
       <LastID>0</LastID>
-      <TableList>ABS_Valve,Horn_Test,Pedal_Test,Speed_Check,Static_ABS</TableList>
+      <TableList>ABS_Valve,Horn_Test,Speed_Check,Static_ABS</TableList>
     </DB_0>
     <DB_1>
       <Name>EOL_FOTON_LS</Name>
@@ -46,5 +46,10 @@
       <LastID>0</LastID>
       <TableList>VehicleInfo</TableList>
     </DB_4>
+    <DB_5>
+      <Name>EOL_FOTON_GAS</Name>
+      <LastID>0</LastID>
+      <TableList>DieselTotal,EmissionTotal</TableList>
+    </DB_5>
   </ExDB>
 </Config>

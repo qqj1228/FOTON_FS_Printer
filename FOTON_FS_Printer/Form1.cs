@@ -98,7 +98,21 @@ namespace FOTON_FS_Printer {
         void SerialDataReceived(object sender, SerialDataReceivedEventArgs e, byte[] bits) {
             Control con = this.ActiveControl;
             if (con is TextBox txt) {
-                txt.Text = Encoding.Default.GetString(bits);
+                // 跨UI线程调用UI控件要使用Invoke
+                this.Invoke((EventHandler)delegate {
+                    txt.Text = Encoding.Default.GetString(bits);
+                    if (bits.Contains<byte>(0x0d) || bits.Contains<byte>(0x0a)) {
+                        if (con.Name == "textBoxVIN") {
+                            this.textBoxVehicleCode.Focus();
+                        } else if (con.Name == "textBoxVehicleCode") {
+                            this.textBoxVehicleType.Focus();
+                        } else if (con.Name == "textBoxVehicleType") {
+                            this.textBoxEngineCode.Focus();
+                        } else if (con.Name == "textBoxEngineCode") {
+                            this.textBoxVIN.Focus();
+                        }
+                    }
+                });
             }
         }
 
@@ -137,6 +151,7 @@ namespace FOTON_FS_Printer {
                 listBox1.Items.Add(item);
             }
 
+            // 测试角度转换功能
             //string str = report.testDegree(this.textBoxVehicleCode.Text);
             //this.textBoxVehicleType.Text = str;
         }
@@ -152,9 +167,9 @@ namespace FOTON_FS_Printer {
                                 { cfg.ColumnDic["VIN"], VIN },
                                 { cfg.ColumnDic["ProductCode"], textBoxVehicleCode.Text },
                                 { cfg.ColumnDic["VehicleType"], textBoxVehicleType.Text },
-                                { cfg.ColumnDic["EngineCode"], textBoxEngineCode.Text }
+                                { cfg.ColumnDic["EngineCode"], textBoxEngineCode.Text },
+                                { "ABSResult", GetABSResult(VIN)?"O":"X" }
                             };
-
                             string[,] rs = db.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
                             if (rs != null) {
                                 if (rs.GetLength(0) > 0) {
@@ -194,5 +209,48 @@ namespace FOTON_FS_Printer {
                 }
             }
         }
+
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e) {
+            if (e.KeyChar == (char)Keys.Enter) {
+                TextBox tb = sender as TextBox;
+                if (tb.Name == "textBoxEngineCode") {
+                    this.textBoxVIN.Focus();
+                } else {
+                    SendKeys.Send("{tab}");
+                }
+            }
+        }
+
+        bool GetABSResult(string VIN) {
+            string[,] rs;
+            int valvePassed = -1;
+            int sensorPassed = -1;
+            for (int i = 0; i < cfg.ExDBList.Count; i++) {
+                int len = cfg.ExDBList[i].TableList.Count;
+                for (int j = 0; j < len; j++) {
+                    if (cfg.ExDBList[i].TableList[j] == "ABS_Valve") {
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i);
+                        if (rs != null) {
+                            int rowNum = rs.GetLength(0);
+                            if (rowNum > 0) {
+                                int.TryParse(rs[rowNum - 1, 0], out int result);
+                                valvePassed = result;
+                            }
+                        }
+                    } else if (cfg.ExDBList[i].TableList[j] == "ABS_Valve") {
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i);
+                        if (rs != null) {
+                            int rowNum = rs.GetLength(0);
+                            if (rowNum > 0) {
+                                int.TryParse(rs[rowNum - 1, 0], out int result);
+                                sensorPassed = result;
+                            }
+                        }
+                    }
+                }
+            }
+            return valvePassed + sensorPassed >= 2;
+        }
+
     }
 }
