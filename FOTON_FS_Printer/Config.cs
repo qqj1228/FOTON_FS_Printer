@@ -24,7 +24,7 @@ namespace FOTON_FS_Printer {
             public string Port { get; set; }
             public string UserID { get; set; }
             public string Pwd { get; set; }
-            public string VehicleInfo { get; set; }
+            public List<string> VehicleInfoList;
             public string LastWorkStation { get; set; }
             public string ColumnConfig { get; set; }
             public List<string> RepeatColumn;
@@ -106,8 +106,8 @@ namespace FOTON_FS_Printer {
                                 DB.UserID = item.InnerText;
                             } else if (item.Name == "Pwd") {
                                 DB.Pwd = item.InnerText;
-                            } else if (item.Name == "VehicleInfo") {
-                                DB.VehicleInfo = item.InnerText;
+                            } else if (item.Name == "VehicleInfoList") {
+                                DB.VehicleInfoList = new List<string>(item.InnerText.Split(','));
                             } else if (item.Name == "LastWorkStation") {
                                 DB.LastWorkStation = item.InnerText;
                             } else if (item.Name == "ColumnConfig") {

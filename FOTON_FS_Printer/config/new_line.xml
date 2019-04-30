@@ -9,7 +9,6 @@
   <TestTime>TestTime</TestTime>
   <BodyColor></BodyColor>
   <TestNumber>TestNumber</TestNumber>
-  <TestResult>TestResult</TestResult>
   <!-- WA -->
   <FL_Toe>Toe_Front_Left</FL_Toe>
   <FL_Toe_Range></FL_Toe_Range>
@@ -82,7 +81,7 @@
   <AvgHNO>HIGH_NO</AvgHNO>
   <AvgHO2></AvgHO2>
   <AvgHCO2>HIGH_CO2</AvgHCO2>
-  <AvgHLAM>EVAL_HIGH_LAMBDA</AvgHLAM>
+  <AvgHLAM>HIGH_LAMBDA</AvgHLAM>
   <MaxK1>MaxK1</MaxK1>
   <MaxK2>MaxK2</MaxK2>
   <MaxK3>MaxK3</MaxK3>
@@ -141,7 +140,7 @@
   <ABS_ValveFR>FR_IsOK</ABS_ValveFR>
   <ABS_ValveRL>RL_IsOK</ABS_ValveRL>
   <ABS_ValveRR>RR_IsOK</ABS_ValveRR>
-  <ABSResult>Static_ABS.Passed</ABSResult>
+  <ABSResult>ABSResult</ABSResult>
   <!-- Others -->
   <FWP>FWP</FWP>
   <Block>BLOCK</Block>
@@ -159,6 +158,6 @@
   <RGAFSG>RGAFSG</RGAFSG>
   <TOTSPOR>TOTSPOR</TOTSPOR>
   <!-- Special Output -->
-  <ResultField>TestResult,WAResult,HLAResult,HornResult,SpeedMeterResult,BrakeResult,ABS_DTC_Des,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
+  <ResultField>WAResult,HLAResult,EmissionResult,HornResult,SpeedMeterResult,BrakeResult,ABS_DTC_Des,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
   <DegreeFormat>FL_Toe,FL_Toe_Range,FR_Toe,FR_Toe_Range,FT_Toe,FL_Camber,FL_Camber_Range,FR_Camber,FR_Camber_Range,FC_Camber,FC_Camber_Range,FL_Caster,FL_Caster_Range,FR_Caster,FR_Caster_Range,FC_Caster,FC_Caster_Range,Thrust_Ang,Thrust_Ang_Range,Symmetry,Symmetry_Range,SWL,SWL_Range,LTAO,LTAO_Range,RTAO,RTAO_Range,LTAI,LTAI_Range,RTAI,RTAI_Range,</DegreeFormat>
 </Column>

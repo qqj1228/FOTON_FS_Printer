@@ -50,6 +50,7 @@ namespace FOTON_FS_Printer {
                     str += "\n";
                 }
                 Console.WriteLine(str);
+                sqlConn.Close();
             }
         }
 
@@ -74,6 +75,7 @@ namespace FOTON_FS_Printer {
                             }
                         }
                     }
+                    sqlConn.Close();
                     //foreach (var item in tableName) {
                     //    Console.WriteLine(item);
                     //}
@@ -112,6 +114,7 @@ namespace FOTON_FS_Printer {
                             }
                         }
                     }
+                    sqlConn.Close();
                     //foreach (var item in tableName) {
                     //    Console.WriteLine(item);
                     //}
@@ -136,6 +139,7 @@ namespace FOTON_FS_Printer {
                     SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                     sqlConn.Open();
                     count = (int)sqlCmd.ExecuteScalar();
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -196,7 +200,7 @@ namespace FOTON_FS_Printer {
                         SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                         iRet += sqlCmd.ExecuteNonQuery();
                     }
-                    //sqlConn.Close();
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -226,6 +230,7 @@ namespace FOTON_FS_Printer {
                         SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                         iRet += sqlCmd.ExecuteNonQuery();
                     }
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -258,6 +263,7 @@ namespace FOTON_FS_Printer {
                     log.TraceInfo("SQL: " + strSQL);
                     SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                     iRet = sqlCmd.ExecuteNonQuery();
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -284,6 +290,7 @@ namespace FOTON_FS_Printer {
                     log.TraceInfo("SQL: " + strSQL);
                     SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                     iRet = sqlCmd.ExecuteNonQuery();
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -304,6 +311,7 @@ namespace FOTON_FS_Printer {
                         SqlCommand sqlCmd = new SqlCommand(strSQL, sqlConn);
                         iRet += sqlCmd.ExecuteNonQuery();
                     }
+                    sqlConn.Close();
                 }
             } catch (Exception e) {
                 Console.Error.WriteLine(e.Message);
@@ -335,6 +343,7 @@ namespace FOTON_FS_Printer {
                         }
                         rowList.Add(items);
                     }
+                    sqlConn.Close();
                 }
                 records = new string[rowList.Count, count];
                 for (int i = 0; i < rowList.Count; i++) {
@@ -400,18 +409,21 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    if (cfg.ExDBList[i].TableList[j] == cfg.DB.VehicleInfo) {
+                    string TableName = cfg.ExDBList[i].TableList[j];
+                    if (cfg.DB.VehicleInfoList.Contains(TableName)) {
                         string[,] rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
                         if (rs != null) {
                             if (rs.GetLength(0) > 0) {
                                 string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
                                 for (int k = 0; k < col.Length; k++) {
-                                    if (col[k] == cfg.ColumnDic["ProductCode"]) {
-                                        ret[0] = rs[0, k];
-                                    } else if (col[k] == cfg.ColumnDic["VehicleType"]) {
-                                        ret[1] = rs[0, k];
-                                    } else if (col[k] == cfg.ColumnDic["EngineCode"]) {
-                                        ret[2] = rs[0, k];
+                                    if (rs[0, k] != "" || rs[0, k] != "-") {
+                                        if (col[k] == cfg.ColumnDic["ProductCode"]) {
+                                            ret[0] = rs[0, k];
+                                        } else if (col[k] == cfg.ColumnDic["VehicleType"]) {
+                                            ret[1] = rs[0, k];
+                                        } else if (col[k] == cfg.ColumnDic["EngineCode"]) {
+                                            ret[2] = rs[0, k];
+                                        }
                                     }
                                 }
                             }
@@ -427,25 +439,16 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    if (cfg.ExDBList[i].TableList[j] == cfg.DB.VehicleInfo) {
-                        string[,] VINRs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                        if (VINRs != null) {
-                            if (VINRs.GetLength(0) <= 0) {
-                                return dic;
-                            }
-                        } else {
-                            return dic;
-                        }
-                    }
-                    string[,] rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
-                    string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
+                    string TableName = cfg.ExDBList[i].TableList[j];
+                    string[,] rs = this.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i);
+                    string[] col = this.GetTableColumns(TableName, i);
                     if (rs != null) {
                         if (rs.GetLength(0) > 0) {
                             for (int n = 0; n < rs.GetLength(0); n++) {
                                 for (int k = 0; k < col.Length; k++) {
                                     for (int m = 0; m < cfg.DB.RepeatColumn.Count; m++) {
                                         if (cfg.DB.RepeatColumn[m] == col[k]) {
-                                            string colName = cfg.ExDBList[i].TableList[j] + "." + col[k];
+                                            string colName = TableName + "." + col[k];
                                             if (dic.ContainsKey(colName)) {
                                                 if (rs[n, k] != "") {
                                                     dic[colName] = rs[n, k];
@@ -455,7 +458,8 @@ namespace FOTON_FS_Printer {
                                             }
                                         } else {
                                             if (dic.ContainsKey(col[k])) {
-                                                if (rs[n, k] != "") {
+                                                // 如果不是默认数据就使用该数据，是默认数据的话就用上一条记录的数据
+                                                if (rs[n, k] != "" && rs[n, k] != "-" && rs[n, k] != "--" && rs[n, k] != "---") {
                                                     dic[col[k]] = rs[n, k];
                                                 }
                                             } else {

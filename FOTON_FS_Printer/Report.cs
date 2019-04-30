@@ -51,19 +51,21 @@ namespace FOTON_FS_Printer {
         }
 
         string Str2Degree(string strOri) {
-            string ret = "";
+            string ret = "-";
             string minute = "";
-            if (strOri.Contains("°")) {
-                ret = strOri.Replace(".", "'");
-            } else {
-                string[] arr = strOri.Split('.');
-                if (arr.Length > 1) {
-                    double.TryParse("." + arr[1], out double result);
-                    result = result * 60 + 0.5;
-                    int iRet = (int)result;
-                    minute = iRet.ToString() + "'";
+            if (strOri != "" && strOri != "x") {
+                if (strOri.Contains("°")) {
+                    ret = strOri.Replace(".", "'");
+                } else {
+                    string[] arr = strOri.Split('.');
+                    if (arr.Length > 1) {
+                        double.TryParse("." + arr[1], out double result);
+                        result = result * 60 + 0.5;
+                        int iRet = (int)result;
+                        minute = iRet.ToString() + "'";
+                    }
+                    ret = arr[0] + "°" + minute;
                 }
-                ret = arr[0] + "°" + minute;
             }
             return ret;
         }
@@ -76,32 +78,35 @@ namespace FOTON_FS_Printer {
             string ret = ori;
             bool totalResult = true;
             foreach (var item in Cfg.ColumnDic) {
-                if (item.Value == "" || !dicData.ContainsKey(item.Value)) {
+                if (!dicData.ContainsKey(item.Value)) {
+                    ret = ret.Replace("$" + item.Key + "$", "-");
+                } else if (dicData[item.Value] == "" || dicData[item.Value] == "-" || dicData[item.Value] == "--" || dicData[item.Value] == "---") {
                     ret = ret.Replace("$" + item.Key + "$", "-");
                 } else {
-                    foreach (string field in Cfg.ResultField) {
-                        if (item.Key == field) {
-                            if (int.TryParse(dicData[item.Value], out int result)) {
-                                if (result > 0) {
-                                    dicData[item.Value] = "OK";
-                                } else {
+                    if (Cfg.ResultField.Contains(item.Key)) {
+                        if (int.TryParse(dicData[item.Value], out int result)) {
+                            if (result > 0) {
+                                dicData[item.Value] = "OK";
+                            } else {
+                                dicData[item.Value] = "不合格";
+                                totalResult = false;
+                            }
+                        } else {
+                            if (dicData[item.Value].Contains('O') || dicData[item.Value].Contains('o') || dicData[item.Value].Contains('P') || dicData[item.Value].Contains('p')) {
+                                if (dicData[item.Value].Contains('N') || dicData[item.Value].Contains('n')) {
                                     dicData[item.Value] = "不合格";
                                     totalResult = false;
+                                } else {
+                                    dicData[item.Value] = "OK";
                                 }
                             } else {
-                                if (dicData[item.Value].Contains('O') || dicData[item.Value].Contains('o')) {
-                                    dicData[item.Value] = "OK";
-                                } else {
-                                    dicData[item.Value] = "不合格";
-                                    totalResult = false;
-                                }
+                                dicData[item.Value] = "不合格";
+                                totalResult = false;
                             }
                         }
                     }
-                    foreach (string degree in Cfg.DegreeFormat) {
-                        if (item.Key == degree) {
-                            dicData[item.Value] = Str2Degree(dicData[item.Value]);
-                        }
+                    if (Cfg.DegreeFormat.Contains(item.Key)) {
+                        dicData[item.Value] = Str2Degree(dicData[item.Value]);
                     }
                     ret = ret.Replace("$" + item.Key + "$", dicData[item.Value]);
                 }

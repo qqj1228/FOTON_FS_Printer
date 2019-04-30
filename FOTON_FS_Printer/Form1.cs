@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using static FOTON_FS_Printer.Config;
@@ -15,6 +16,7 @@ namespace FOTON_FS_Printer {
         Logger log;
         Config cfg;
         Model db;
+        MainFileVersion fileVer;
         SerialPortClass sp;
         ReportClass report;
         Timer timer;
@@ -24,6 +26,8 @@ namespace FOTON_FS_Printer {
             log = new Logger("./log", EnumLogLevel.LogLevelAll, true, 100);
             cfg = new Config(log);
             db = new Model(cfg, log);
+            fileVer = new MainFileVersion();
+            this.label_Version.Text = "Ver: " + fileVer.AssemblyVersion.ToString() + ", 用于" + (cfg.Main.NewTestLine > 0 ? "新检测线" : "老检测线");
             report = new ReportClass(cfg, log, 100);
             timer = new Timer();
             timer.Tick += new EventHandler(TimerEventProcessor);
@@ -162,22 +166,32 @@ namespace FOTON_FS_Printer {
                 for (int i = 0; i < cfg.ExDBList.Count; i++) {
                     int len = cfg.ExDBList[i].TableList.Count;
                     for (int j = 0; j < len; j++) {
-                        if (cfg.ExDBList[i].TableList[j] == cfg.DB.VehicleInfo) {
+                        string TableName = cfg.ExDBList[i].TableList[j];
+                        if (cfg.DB.VehicleInfoList.Contains(TableName)) {
+                            string[] col = db.GetTableColumns(TableName, i);
                             Dictionary<string, string> dicInfo = new Dictionary<string, string> {
                                 { cfg.ColumnDic["VIN"], VIN },
-                                { cfg.ColumnDic["ProductCode"], textBoxVehicleCode.Text },
-                                { cfg.ColumnDic["VehicleType"], textBoxVehicleType.Text },
-                                { cfg.ColumnDic["EngineCode"], textBoxEngineCode.Text },
-                                { "ABSResult", GetABSResult(VIN)?"O":"X" }
                             };
-                            string[,] rs = db.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
+                            if (col.Contains<string>(cfg.ColumnDic["ProductCode"])) {
+                                dicInfo.Add(cfg.ColumnDic["ProductCode"], textBoxVehicleCode.Text);
+                            }
+                            if (col.Contains<string>(cfg.ColumnDic["VehicleType"])) {
+                                dicInfo.Add(cfg.ColumnDic["VehicleType"], textBoxVehicleType.Text);
+                            }
+                            if (col.Contains<string>(cfg.ColumnDic["EngineCode"])) {
+                                dicInfo.Add(cfg.ColumnDic["EngineCode"], textBoxEngineCode.Text);
+                            }
+                            if (col.Contains<string>(cfg.ColumnDic["ABSResult"]) && cfg.Main.NewTestLine > 0) {
+                                dicInfo.Add(cfg.ColumnDic["ABSResult"], GetABSResult(VIN) ? "O" : "X");
+                            }
+                            string[,] rs = db.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i);
                             if (rs != null) {
                                 if (rs.GetLength(0) > 0) {
                                     KeyValuePair<string, string> pair = new KeyValuePair<string, string>(cfg.ColumnDic["VIN"], VIN);
-                                    db.UpdateRecord(cfg.ExDBList[i].TableList[j], pair, dicInfo, i);
+                                    db.UpdateRecord(TableName, pair, dicInfo, i);
                                     MessageBox.Show("成功更新数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 } else {
-                                    db.InsertRecord(cfg.ExDBList[i].TableList[j], dicInfo, i);
+                                    db.InsertRecord(TableName, dicInfo, i);
                                     MessageBox.Show("成功插入数据", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 }
                             }
@@ -237,7 +251,7 @@ namespace FOTON_FS_Printer {
                                 valvePassed = result;
                             }
                         }
-                    } else if (cfg.ExDBList[i].TableList[j] == "ABS_Valve") {
+                    } else if (cfg.ExDBList[i].TableList[j] == "Static_ABS") {
                         rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i);
                         if (rs != null) {
                             int rowNum = rs.GetLength(0);
@@ -253,4 +267,20 @@ namespace FOTON_FS_Printer {
         }
 
     }
+
+    // 获取文件版本类
+    public class MainFileVersion {
+        public Version AssemblyVersion {
+            get { return ((Assembly.GetEntryAssembly()).GetName()).Version; }
+        }
+
+        public Version AssemblyFileVersion {
+            get { return new Version(FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).FileVersion); }
+        }
+
+        public string AssemblyInformationalVersion {
+            get { return FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location).ProductVersion; }
+        }
+    }
+
 }

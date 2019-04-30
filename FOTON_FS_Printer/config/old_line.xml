@@ -2,8 +2,8 @@
   <!-- Info -->
   <ID>SELFID</ID>
   <VIN>VIN</VIN>
-  <VehicleType>CARTYPE</VehicleType>
-  <EngineCode>F_D_J_ID</EngineCode>
+  <VehicleType>C_X</VehicleType>
+  <EngineCode>ENGINECODE</EngineCode>
   <ProductCode>Z_B</ProductCode>
   <LeaveFactoryTime>LEAVEFACTORYTIME</LeaveFactoryTime>
   <TestTime>TESTTIME</TestTime>
@@ -108,7 +108,7 @@
   <Ax1_BrakeDiff>QZZDDIS</Ax1_BrakeDiff>
   <Ax1_LDragForce>QZZDBLOCKL</Ax1_LDragForce>
   <Ax1_RDragForce>QZZDBLOCKR</Ax1_RDragForce>
-  <Ax1_ForceMax>QZZDMAX</Ax1_ForceMax>
+  <Ax1_ForceMax>ZDT_BIG_AX1</Ax1_ForceMax>
   <Ax2_LWeight>HZZDWEIGHTL</Ax2_LWeight>
   <Ax2_RWeight>HZZDWEIGHTR</Ax2_RWeight>
   <Ax2_LBrakeForceMax>HZZDMAXL</Ax2_LBrakeForceMax>
@@ -119,7 +119,7 @@
   <Ax2_BrakeDiff>HZZDDIS</Ax2_BrakeDiff>
   <Ax2_LDragForce>HZZDBLOCKL</Ax2_LDragForce>
   <Ax2_RDragForce>HZZDBLOCKR</Ax2_RDragForce>
-  <Ax2_ForceMax>HZZDMAX</Ax2_ForceMax>
+  <Ax2_ForceMax>ZDT_BIG_AX2</Ax2_ForceMax>
   <Total_Weight>WCZDWEIGHT</Total_Weight>
   <LTotal_BrakeForceMax>WCZDMAXL</LTotal_BrakeForceMax>
   <RTotal_BrakeForceMax>WCZDMAXR</RTotal_BrakeForceMax>
@@ -128,7 +128,7 @@
   <LPark_BrakeForceMax>ZCZDMAXL</LPark_BrakeForceMax>
   <RPark_BrakeForceMax>ZCZDMAXR</RPark_BrakeForceMax>
   <Park_BrakeSum>ZCZDJOIN</Park_BrakeSum>
-  <BrakeResult>FS_Braking.RESULT</BrakeResult>
+  <BrakeResult>ZDT_RESULT</BrakeResult>
   <!-- ABS -->
   <ABS_DTC_Num></ABS_DTC_Num>
   <ABS_DTC_Des>FAULTDES</ABS_DTC_Des>
@@ -158,6 +158,6 @@
   <RGAFSG>RGAFSG</RGAFSG>
   <TOTSPOR>TOTSPOR</TOTSPOR>
   <!-- Result Field -->
-  <ResultField>TestResult,WAResult,HLAResult,HornResult,SideSlipResult,SpeedMeterResult,BrakeResult,ABS_DTC_Des,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
+  <ResultField>TestResult,WAResult,HLAResult,EmissionResult,HornResult,SideSlipResult,SpeedMeterResult,BrakeResult,ABS_SensorFL,ABS_SensorFR,ABS_SensorRL,ABS_SensorRR,ABS_ValveFL,ABS_ValveFR,ABS_ValveRL,ABS_ValveRR,ABSResult,FWP,Block,Steer,Wiper,RearViewMirror,Light,Starter,PipeLine,Tyre,WWSG,EMS,Engine,TNB,RGAFSG,TOTSPOR</ResultField>
   <DegreeFormat>FL_Toe,FL_Toe_Range,FR_Toe,FR_Toe_Range,FT_Toe,FT_Toe_Range,FL_Camber,FL_Camber_Range,FR_Camber,FR_Camber_Range,FC_Camber,FC_Camber_Range,FL_Caster,FL_Caster_Range,FR_Caster,FR_Caster_Range,FC_Caster,FC_Caster_Range,Thrust_Ang,Thrust_Ang_Range,Symmetry,Symmetry_Range,SWL,SWL_Range,LTAO,LTAO_Range,RTAO,RTAO_Range,LTAI,LTAI_Range,RTAI,RTAI_Range,</DegreeFormat>
 </Column>

@@ -34,6 +34,7 @@
             this.buttonSearch = new System.Windows.Forms.Button();
             this.buttonInput = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.label_Version = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -141,16 +142,27 @@
             this.listBox1.ItemHeight = 12;
             this.listBox1.Location = new System.Drawing.Point(13, 196);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(287, 232);
+            this.listBox1.Size = new System.Drawing.Size(287, 220);
             this.listBox1.TabIndex = 10;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
+            // 
+            // label_Version
+            // 
+            this.label_Version.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label_Version.AutoSize = true;
+            this.label_Version.Location = new System.Drawing.Point(12, 426);
+            this.label_Version.Name = "label_Version";
+            this.label_Version.Size = new System.Drawing.Size(47, 12);
+            this.label_Version.TabIndex = 11;
+            this.label_Version.Text = "Version";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 450);
+            this.Controls.Add(this.label_Version);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.buttonInput);
             this.Controls.Add(this.buttonSearch);
@@ -183,6 +195,7 @@
         private System.Windows.Forms.Button buttonSearch;
         private System.Windows.Forms.Button buttonInput;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Label label_Version;
     }
 }
 
