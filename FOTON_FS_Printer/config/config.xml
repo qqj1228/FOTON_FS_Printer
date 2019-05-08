@@ -15,7 +15,7 @@
     <Port>1433</Port>
     <UserID>sa</UserID>
     <Pwd>12345678</Pwd>
-    <VehicleInfo>VehicleInfo</VehicleInfo>
+    <VehicleInfoList>VehicleInfo</VehicleInfoList>
     <LastWorkStation>Brake_Test</LastWorkStation>
     <ColumnConfig>new_line.xml</ColumnConfig>
     <RepeatColumn>Passed</RepeatColumn>

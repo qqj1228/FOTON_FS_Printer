@@ -16,7 +16,7 @@
     <Port>1433</Port>
     <UserID>sa</UserID>
     <Pwd>12345678</Pwd>
-    <VehicleInfo>FS_Vehicleinfo</VehicleInfo>
+    <VehicleInfoList>FS_MES_Vehicle_TEST,FS_Vehicleinfo</VehicleInfoList>
     <LastWorkStation>FS_Braking</LastWorkStation>
     <ColumnConfig>old_line.xml</ColumnConfig>
     <RepeatColumn>RESULT</RepeatColumn>

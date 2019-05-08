@@ -74,14 +74,37 @@ namespace FOTON_FS_Printer {
             return Str2Degree(str);
         }
 
+        /// <summary>
+        /// 特殊处理ABSResult项，如果ABS_DTC_Des项为不合格的话ABSResult项也为不合格，
+        /// 其余情况不处理，例如ABS_DTC_Des == "---"，ABS未检测到DTC结果
+        /// </summary>
+        /// <param name="dicData"></param>
+        void HandleABSResult(Dictionary<string, string> dicData) {
+            if (Cfg.ColumnDic.ContainsKey("ABS_DTC_Des") && Cfg.ColumnDic.ContainsKey("ABSResult")) {
+                if (int.TryParse(dicData[Cfg.ColumnDic["ABS_DTC_Des"]], out int result)) {
+                    if (result <= 0) {
+                        dicData[Cfg.ColumnDic["ABSResult"]] = "X";
+                    }
+                } else if (dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('N') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('n') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('X') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('x')) {
+                    dicData[Cfg.ColumnDic["ABSResult"]] = "X";
+                }
+            }
+        }
+
         string ReplaceData(string ori, Dictionary<string, string> dicData) {
             string ret = ori;
             bool totalResult = true;
+            HandleABSResult(dicData);
             foreach (var item in Cfg.ColumnDic) {
                 if (!dicData.ContainsKey(item.Value)) {
+                    // 模板内的报表项不包含在结果数据dicData中
                     ret = ret.Replace("$" + item.Key + "$", "-");
-                } else if (dicData[item.Value] == "" || dicData[item.Value] == "-" || dicData[item.Value] == "--" || dicData[item.Value] == "---") {
+                } else if (dicData[item.Value] == "" || dicData[item.Value] == "-") {
+                    // 结果数据dicData中为默认值的报表项
                     ret = ret.Replace("$" + item.Key + "$", "-");
+                } else if (dicData[item.Value] == "---" || dicData[item.Value] == "--") {
+                    // 结果数据dicData中为"---"表示ABS未检测到DTC描述，不做结果显示转换，不判定为不合格
+                    ret = ret.Replace("$" + item.Key + "$", "---");
                 } else {
                     if (Cfg.ResultField.Contains(item.Key)) {
                         if (int.TryParse(dicData[item.Value], out int result)) {

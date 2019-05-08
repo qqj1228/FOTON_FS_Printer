@@ -459,7 +459,7 @@ namespace FOTON_FS_Printer {
                                         } else {
                                             if (dic.ContainsKey(col[k])) {
                                                 // 如果不是默认数据就使用该数据，是默认数据的话就用上一条记录的数据
-                                                if (rs[n, k] != "" && rs[n, k] != "-" && rs[n, k] != "--" && rs[n, k] != "---") {
+                                                if (rs[n, k] != "" && rs[n, k] != "-" && rs[n, k] != "x") {
                                                     dic[col[k]] = rs[n, k];
                                                 }
                                             } else {
