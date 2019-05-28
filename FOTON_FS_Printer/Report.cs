@@ -81,12 +81,14 @@ namespace FOTON_FS_Printer {
         /// <param name="dicData"></param>
         void HandleABSResult(Dictionary<string, string> dicData) {
             if (Cfg.ColumnDic.ContainsKey("ABS_DTC_Des") && Cfg.ColumnDic.ContainsKey("ABSResult")) {
-                if (int.TryParse(dicData[Cfg.ColumnDic["ABS_DTC_Des"]], out int result)) {
-                    if (result <= 0) {
+                if (dicData.ContainsKey(Cfg.ColumnDic["ABS_DTC_Des"]) && dicData.ContainsKey(Cfg.ColumnDic["ABSResult"])) {
+                    if (int.TryParse(dicData[Cfg.ColumnDic["ABS_DTC_Des"]], out int result)) {
+                        if (result <= 0) {
+                            dicData[Cfg.ColumnDic["ABSResult"]] = "X";
+                        }
+                    } else if (dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('N') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('n') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('X') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('x')) {
                         dicData[Cfg.ColumnDic["ABSResult"]] = "X";
                     }
-                } else if (dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('N') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('n') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('X') || dicData[Cfg.ColumnDic["ABS_DTC_Des"]].Contains('x')) {
-                    dicData[Cfg.ColumnDic["ABSResult"]] = "X";
                 }
             }
         }
