@@ -53,6 +53,9 @@ namespace FOTON_FS_Printer {
                     if (cfg.ExDBList[i].TableList[j] == cfg.DB.LastWorkStation) {
                         string[,] rs = db.GetNewRecords(cfg.ExDBList[i].TableList[j], i);
                         if (rs != null) {
+                            this.label_DB_Status.Text = "【与数据库连接正常】";
+                            this.label_DB_Status.ForeColor = Color.Black;
+
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
                                 string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
@@ -93,6 +96,9 @@ namespace FOTON_FS_Printer {
                                 TempExDB.LastID = result;
                                 cfg.ExDBList[i] = TempExDB;
                             }
+                        } else {
+                            this.label_DB_Status.Text = "【与数据库连接出错】";
+                            this.label_DB_Status.ForeColor = Color.Red;
                         }
                     }
                 }

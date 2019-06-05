@@ -35,6 +35,7 @@
             this.buttonInput = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label_Version = new System.Windows.Forms.Label();
+            this.label_DB_Status = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -115,7 +116,8 @@
             // 
             // buttonSearch
             // 
-            this.buttonSearch.Location = new System.Drawing.Point(100, 159);
+            this.buttonSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSearch.Location = new System.Drawing.Point(144, 159);
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.Size = new System.Drawing.Size(75, 23);
             this.buttonSearch.TabIndex = 8;
@@ -125,6 +127,7 @@
             // 
             // buttonInput
             // 
+            this.buttonInput.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInput.Location = new System.Drawing.Point(225, 159);
             this.buttonInput.Name = "buttonInput";
             this.buttonInput.Size = new System.Drawing.Size(75, 23);
@@ -157,11 +160,24 @@
             this.label_Version.TabIndex = 11;
             this.label_Version.Text = "Version";
             // 
+            // label_DB_Status
+            // 
+            this.label_DB_Status.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_DB_Status.AutoSize = true;
+            this.label_DB_Status.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label_DB_Status.Location = new System.Drawing.Point(13, 165);
+            this.label_DB_Status.Name = "label_DB_Status";
+            this.label_DB_Status.Size = new System.Drawing.Size(125, 12);
+            this.label_DB_Status.TabIndex = 12;
+            this.label_DB_Status.Text = "【与数据库连接正常】";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 450);
+            this.Controls.Add(this.label_DB_Status);
             this.Controls.Add(this.label_Version);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.buttonInput);
@@ -196,6 +212,7 @@
         private System.Windows.Forms.Button buttonInput;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.Label label_Version;
+        private System.Windows.Forms.Label label_DB_Status;
     }
 }
 
