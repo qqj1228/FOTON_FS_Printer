@@ -82,7 +82,7 @@
             this.textBoxVIN.Name = "textBoxVIN";
             this.textBoxVIN.Size = new System.Drawing.Size(200, 21);
             this.textBoxVIN.TabIndex = 4;
-            this.textBoxVIN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
+            this.textBoxVIN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // textBoxVehicleCode
             // 
@@ -92,7 +92,7 @@
             this.textBoxVehicleCode.Name = "textBoxVehicleCode";
             this.textBoxVehicleCode.Size = new System.Drawing.Size(200, 21);
             this.textBoxVehicleCode.TabIndex = 5;
-            this.textBoxVehicleCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
+            this.textBoxVehicleCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // textBoxVehicleType
             // 
@@ -102,7 +102,7 @@
             this.textBoxVehicleType.Name = "textBoxVehicleType";
             this.textBoxVehicleType.Size = new System.Drawing.Size(200, 21);
             this.textBoxVehicleType.TabIndex = 6;
-            this.textBoxVehicleType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
+            this.textBoxVehicleType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // textBoxEngineCode
             // 
@@ -112,7 +112,7 @@
             this.textBoxEngineCode.Name = "textBoxEngineCode";
             this.textBoxEngineCode.Size = new System.Drawing.Size(200, 21);
             this.textBoxEngineCode.TabIndex = 7;
-            this.textBoxEngineCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_KeyPress);
+            this.textBoxEngineCode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // buttonSearch
             // 
@@ -123,7 +123,7 @@
             this.buttonSearch.TabIndex = 8;
             this.buttonSearch.Text = "VIN号查询";
             this.buttonSearch.UseVisualStyleBackColor = true;
-            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonSearch.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // buttonInput
             // 
@@ -134,7 +134,7 @@
             this.buttonInput.TabIndex = 9;
             this.buttonInput.Text = "输入参数";
             this.buttonInput.UseVisualStyleBackColor = true;
-            this.buttonInput.Click += new System.EventHandler(this.buttonInput_Click);
+            this.buttonInput.Click += new System.EventHandler(this.ButtonInput_Click);
             // 
             // listBox1
             // 
@@ -147,8 +147,8 @@
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(287, 220);
             this.listBox1.TabIndex = 10;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-            this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.ListBox1_SelectedIndexChanged);
+            this.listBox1.DoubleClick += new System.EventHandler(this.ListBox1_DoubleClick);
             // 
             // label_Version
             // 

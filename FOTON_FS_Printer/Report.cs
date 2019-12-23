@@ -27,18 +27,6 @@ namespace FOTON_FS_Printer {
             }
         }
 
-        void GenFileQueue() {
-            DirectoryInfo dirinfo = new DirectoryInfo(StrTempPath);
-            FileInfo[] Files = dirinfo.GetFiles();
-            // 递增排序
-            Array.Sort<FileInfo>(Files, (FileInfo x, FileInfo y) => { return x.LastWriteTime.CompareTo(y.LastWriteTime); });
-            // 递减排序
-            //Array.Sort<FileInfo>(Files, (FileInfo x, FileInfo y) => { return y.LastWriteTime.CompareTo(x.LastWriteTime); });
-            foreach (var item in Files) {
-                FileQueue.Enqueue(StrTempPath + item.Name);
-            }
-        }
-
         void UpdateFileQueue() {
             if (MaxFileQty > 0) {
                 int qty = FileQueue.Count - MaxFileQty + 1;
@@ -53,7 +41,7 @@ namespace FOTON_FS_Printer {
         string Str2Degree(string strOri) {
             string ret = "-";
             string minute = "";
-            if (strOri != "" && strOri != "x") {
+            if (strOri.Length > 0 && strOri != "x") {
                 if (strOri.Contains("°")) {
                     ret = strOri.Replace(".", "'");
                 } else {
@@ -68,10 +56,6 @@ namespace FOTON_FS_Printer {
                 }
             }
             return ret;
-        }
-
-        public string testDegree(string str) {
-            return Str2Degree(str);
         }
 
         /// <summary>
@@ -127,7 +111,7 @@ namespace FOTON_FS_Printer {
                 if (!dicData.ContainsKey(item.Value)) {
                     // 模板内的报表项不包含在结果数据dicData中
                     ret = ret.Replace("$" + item.Key + "$", "-");
-                } else if (dicData[item.Value] == "" || dicData[item.Value] == "-") {
+                } else if (dicData[item.Value].Length == 0 || dicData[item.Value] == "-") {
                     // 结果数据dicData中为默认值的报表项
                     ret = ret.Replace("$" + item.Key + "$", "-");
                 } else if (dicData[item.Value] == "---" || dicData[item.Value] == "--") {
@@ -182,7 +166,7 @@ namespace FOTON_FS_Printer {
         }
 
         string NormalizeResult(string value) {
-            string ret = "OK";
+            string ret;
             if (int.TryParse(value, out int result)) {
                 if (result > 0) {
                     ret = "OK";

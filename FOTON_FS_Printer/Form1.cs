@@ -13,13 +13,13 @@ using static FOTON_FS_Printer.Config;
 
 namespace FOTON_FS_Printer {
     public partial class Form1 : Form {
-        Logger log;
-        Config cfg;
-        Model db;
-        MainFileVersion fileVer;
-        SerialPortClass sp;
-        ReportClass report;
-        Timer timer;
+        readonly Logger log;
+        readonly Config cfg;
+        readonly Model db;
+        readonly MainFileVersion fileVer;
+        readonly SerialPortClass sp;
+        readonly ReportClass report;
+        readonly Timer timer;
 
         public Form1() {
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace FOTON_FS_Printer {
             timer.Tick += new EventHandler(TimerEventProcessor);
             timer.Interval = cfg.Main.Interval * 1000;
             timer.Start();
-            if (cfg.Serial.PortName != "") {
+            if (cfg.Serial.PortName.Length > 0) {
                 sp = new SerialPortClass(
                     cfg.Serial.PortName,
                     cfg.Serial.BaudRate,
@@ -80,7 +80,7 @@ namespace FOTON_FS_Printer {
                                 this.textBoxEngineCode.Text = vi[2];
 
                                 // 若vi项均不为空的话就自动显示检测结果报表
-                                if (vi[0] != "" && vi[1] != "" && vi[2] != "") {
+                                if (vi[0].Length > 0 && vi[1].Length > 0 && vi[2].Length > 0) {
                                     string VIN = rs[rowNum - 1, VINIndex];
                                     Dictionary<string, string> dic = db.GetVehicleResult(VIN);
                                     if (dic.Count > 0) {
@@ -132,7 +132,7 @@ namespace FOTON_FS_Printer {
             }
         }
 
-        private void buttonSearch_Click(object sender, EventArgs e) {
+        private void ButtonSearch_Click(object sender, EventArgs e) {
             string VIN = textBoxVIN.Text;
             this.listBox1.Items.Clear();
             this.listBox1.Items.Add("正在查询。。。");
@@ -146,7 +146,7 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    rs = db.GetLikeRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i);
+                    rs = db.GetLikeRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i, null);
                     if (rs != null) {
                         int length = rs.GetLength(0);
                         for (int k = 0; k < length; k++) {
@@ -161,12 +161,9 @@ namespace FOTON_FS_Printer {
                 listBox1.Items.Add(item);
             }
 
-            // 测试角度转换功能
-            //string str = report.testDegree(this.textBoxVehicleCode.Text);
-            //this.textBoxVehicleType.Text = str;
         }
 
-        private void buttonInput_Click(object sender, EventArgs e) {
+        private void ButtonInput_Click(object sender, EventArgs e) {
             if (this.listBox1.SelectedItems.Count > 0) {
                 string VIN = this.listBox1.SelectedItem.ToString();
                 for (int i = 0; i < cfg.ExDBList.Count; i++) {
@@ -190,7 +187,7 @@ namespace FOTON_FS_Printer {
                             if (col.Contains<string>(cfg.ColumnDic["ABSResult"]) && cfg.Main.NewTestLine > 0) {
                                 dicInfo.Add(cfg.ColumnDic["ABSResult"], GetABSResult(VIN) ? "O" : "X");
                             }
-                            string[,] rs = db.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i);
+                            string[,] rs = db.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i, null);
                             if (rs != null) {
                                 if (rs.GetLength(0) > 0) {
                                     KeyValuePair<string, string> pair = new KeyValuePair<string, string>(cfg.ColumnDic["VIN"], VIN);
@@ -207,7 +204,7 @@ namespace FOTON_FS_Printer {
             }
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e) {
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e) {
             if (listBox1.SelectedItem != null) {
                 string VIN = listBox1.SelectedItem.ToString();
                 string[] vi = db.GetVehicleInfo(VIN);
@@ -217,7 +214,7 @@ namespace FOTON_FS_Printer {
             }
         }
 
-        private void listBox1_DoubleClick(object sender, EventArgs e) {
+        private void ListBox1_DoubleClick(object sender, EventArgs e) {
             if (listBox1.SelectedItem != null) {
                 string VIN = listBox1.SelectedItem.ToString();
                 Dictionary<string, string> dic = db.GetVehicleResult(VIN);
@@ -230,7 +227,7 @@ namespace FOTON_FS_Printer {
             }
         }
 
-        private void textBox_KeyPress(object sender, KeyPressEventArgs e) {
+        private void TextBox_KeyPress(object sender, KeyPressEventArgs e) {
             if (e.KeyChar == (char)Keys.Enter) {
                 TextBox tb = sender as TextBox;
                 if (tb.Name == "textBoxEngineCode") {
@@ -249,7 +246,7 @@ namespace FOTON_FS_Printer {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j] == "ABS_Valve") {
-                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i);
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i, "ID");
                         if (rs != null) {
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
@@ -258,7 +255,7 @@ namespace FOTON_FS_Printer {
                             }
                         }
                     } else if (cfg.ExDBList[i].TableList[j] == "Static_ABS") {
-                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i);
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i, "ID");
                         if (rs != null) {
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
