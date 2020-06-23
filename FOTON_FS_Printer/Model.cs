@@ -352,6 +352,7 @@ namespace FOTON_FS_Printer {
             }
             log.TraceInfo("SQL: " + strSQL);
             string[,] strArr = SelectDB(strSQL, DBIndex);
+            log.TraceInfo(GetDBResultLog(strTableName, false, DBIndex, strArr));
             return strArr;
         }
 
@@ -362,6 +363,7 @@ namespace FOTON_FS_Printer {
             }
             log.TraceInfo("SQL: " + strSQL);
             string[,] strArr = SelectDB(strSQL, DBIndex);
+            log.TraceInfo(GetDBResultLog(strTableName, true, DBIndex, strArr));
             return strArr;
         }
 
@@ -372,10 +374,11 @@ namespace FOTON_FS_Printer {
             }
             log.TraceInfo("SQL: " + strSQL);
             string[,] strArr = SelectDB(strSQL, DBIndex);
+            log.TraceInfo(GetDBResultLog(strTableName, false, DBIndex, strArr));
             return strArr;
         }
 
-        public string[,] GetNewRecords(string strTableName, int index) {
+        public string[,] GetNewRecords(string strTableName, int index, string orderby) {
             string strLastID;
             if (cfg.ExDBList[index].LastID >= 0) {
                 strLastID = cfg.ExDBList[index].LastID.ToString();
@@ -386,9 +389,10 @@ namespace FOTON_FS_Printer {
                 log.TraceError(string.Format("The {0}.LastID < 0", cfg.ExDBList[index].Name));
                 return new string[,] { { "" }, { "" } };
             }
-            string strSQL = "select * from " + strTableName + " where ID > '" + strLastID + "' order by ID";
+            string strSQL = "select * from " + strTableName + " where ID > '" + strLastID + "' order by " + orderby;
             log.TraceInfo("SQL: " + strSQL);
             string[,] strArr = SelectDB(strSQL, index);
+            log.TraceInfo(GetDBResultLog(strTableName, true, index, strArr));
             return strArr;
         }
 
@@ -402,17 +406,12 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    string TableName = cfg.ExDBList[i].TableList[j];
+                    string TableName = cfg.ExDBList[i].TableList[j][0];
                     if (cfg.DB.VehicleInfoList.Contains(TableName)) {
-                        string[,] rs;
-                        if (TableName.Contains("MES")) {
-                            rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i, "SELFID");
-                        } else {
-                            rs = this.GetRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i, "ID");
-                        }
+                        string[,] rs = this.GetRecords(cfg.ExDBList[i].TableList[j][0], cfg.ColumnDic["VIN"], VIN, i, cfg.ExDBList[i].TableList[j][1]);
                         if (rs != null) {
                             if (rs.GetLength(0) > 0) {
-                                string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
+                                string[] col = this.GetTableColumns(cfg.ExDBList[i].TableList[j][0], i);
                                 for (int k = 0; k < col.Length; k++) {
                                     if (rs[0, k].Length > 0 || rs[0, k] != "-") {
                                         if (col[k] == cfg.ColumnDic["ProductCode"]) {
@@ -437,13 +436,9 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    string TableName = cfg.ExDBList[i].TableList[j];
-                    string[,] rs;
-                    if (TableName.Contains("MES")) {
-                        rs = this.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i, "SELFID");
-                    } else {
-                        rs = this.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i, "ID");
-                    }
+                    string TableName = cfg.ExDBList[i].TableList[j][0];
+                    string SortItem = cfg.ExDBList[i].TableList[j][1];
+                    string[,] rs = this.GetRecords(TableName, cfg.ColumnDic["VIN"], VIN, i, SortItem);
                     string[] col = this.GetTableColumns(TableName, i);
                     if (rs != null) {
                         if (rs.GetLength(0) > 0) {
@@ -479,5 +474,22 @@ namespace FOTON_FS_Printer {
             return dic;
         }
 
+        private string GetDBResultLog(string strTableName, bool bShowCol, int index, string[,] results) {
+            string strRet = "Connection string: " + m_strConn[index] + Environment.NewLine;
+            if (bShowCol) {
+                string[] cols = GetTableColumns(strTableName, index);
+                foreach (string col in cols) {
+                    strRet += col + ",";
+                }
+                strRet += Environment.NewLine;
+            }
+            for (int rowNum = 0; rowNum < results.GetLength(0); rowNum++) {
+                for (int colNum = 0; colNum < results.GetLength(1); colNum++) {
+                    strRet += results[rowNum, colNum] + ",";
+                }
+                strRet += Environment.NewLine;
+            }
+            return strRet;
+        }
     }
 }

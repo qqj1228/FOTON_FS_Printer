@@ -25,7 +25,7 @@
     <DB_0>
       <Name>FS_EOL_TESTER</Name>
       <LastID>52466</LastID>
-      <TableList>FS_MES_Vehicle_TEST,FS_MES_SL_TEST,FS_MES_DD_TEST,FS_MES_PF_TEST,FS_MES_Other_TEST,FS_Vehicleinfo,FS_Braking</TableList>
+      <TableList>FS_MES_Vehicle_TEST@SELFID,FS_MES_SL_TEST@SELFID,FS_MES_DD_TEST@SELFID,FS_MES_PF_TEST@SELFID,FS_MES_Other_TEST@SELFID,FS_Vehicleinfo@ID,FS_Braking@ID</TableList>
     </DB_0>
   </ExDB>
 </Config>

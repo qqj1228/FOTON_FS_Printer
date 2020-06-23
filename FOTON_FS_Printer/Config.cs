@@ -33,7 +33,7 @@ namespace FOTON_FS_Printer {
         public struct ExportDBConfig {
             public string Name { get; set; } // 欲导出的数据库的名字
             public int LastID { get; set; } // 数据库最新记录的ID
-            public List<string> TableList; // 欲导出的表名列表
+            public List<string[]> TableList; // 欲导出的[表名, 排序字段]列表
         }
 
         public MainConfig Main;
@@ -128,7 +128,12 @@ namespace FOTON_FS_Printer {
                                     int.TryParse(subItem.InnerText, out int result);
                                     TempExDB.LastID = result;
                                 } else if (subItem.Name == "TableList") {
-                                    TempExDB.TableList = new List<string>(subItem.InnerText.Split(','));
+                                    List<string> tables = new List<string>(subItem.InnerText.Split(','));
+                                    List<string[]> sortItems = new List<string[]>();
+                                    foreach (string table in tables) {
+                                        sortItems.Add(table.Split('@'));
+                                    }
+                                    TempExDB.TableList = sortItems;
                                 }
                             }
                             ExDBList.Add(TempExDB);

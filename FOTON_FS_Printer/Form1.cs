@@ -29,6 +29,7 @@ namespace FOTON_FS_Printer {
             fileVer = new MainFileVersion();
             this.label_Version.Text = "Ver: " + fileVer.AssemblyVersion.ToString() + ", 用于" + (cfg.Main.NewTestLine > 0 ? "新检测线" : "老检测线");
             report = new ReportClass(cfg, log, 100);
+            log.TraceInfo("================ Start Application Ver: " + fileVer.AssemblyVersion.ToString() + " ==================");
             timer = new Timer();
             timer.Tick += new EventHandler(TimerEventProcessor);
             timer.Interval = cfg.Main.Interval * 1000;
@@ -50,15 +51,15 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    if (cfg.ExDBList[i].TableList[j] == cfg.DB.LastWorkStation) {
-                        string[,] rs = db.GetNewRecords(cfg.ExDBList[i].TableList[j], i);
+                    if (cfg.ExDBList[i].TableList[j][0] == cfg.DB.LastWorkStation) {
+                        string[,] rs = db.GetNewRecords(cfg.ExDBList[i].TableList[j][0], i, cfg.ExDBList[i].TableList[j][1]);
                         if (rs != null) {
                             this.label_DB_Status.Text = "【与数据库连接正常】";
                             this.label_DB_Status.ForeColor = Color.Black;
 
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
-                                string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j], i);
+                                string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j][0], i);
                                 // 计算ID, VIN字段索引值
                                 int IDIndex = 0;
                                 int VINIndex = 1;
@@ -82,9 +83,12 @@ namespace FOTON_FS_Printer {
                                 // 若vi项均不为空的话就自动显示检测结果报表
                                 if (vi[0].Length > 0 && vi[1].Length > 0 && vi[2].Length > 0) {
                                     string VIN = rs[rowNum - 1, VINIndex];
+                                    log.TraceInfo(">>>> Ver: " + fileVer.AssemblyVersion.ToString() + ", " + (cfg.Main.NewTestLine > 0 ? "new test line" : "old test line") + ", " + cfg.DB.ColumnConfig);
+                                    log.TraceInfo(">>>> Get Vehicle Result on timer, VIN: " + VIN);
                                     Dictionary<string, string> dic = db.GetVehicleResult(VIN);
                                     if (dic.Count > 0) {
                                         report.WriteReport(VIN, dic);
+                                        log.TraceInfo(">>>> Show Report File on timer, VIN: " + VIN);
                                         Process.Start(report.GetReportFile(VIN));
                                     } else {
                                         MessageBox.Show("该VIN号车辆无检测结果数据！", "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -146,7 +150,7 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    rs = db.GetLikeRecords(cfg.ExDBList[i].TableList[j], cfg.ColumnDic["VIN"], VIN, i, null);
+                    rs = db.GetLikeRecords(cfg.ExDBList[i].TableList[j][0], cfg.ColumnDic["VIN"], VIN, i, null);
                     if (rs != null) {
                         int length = rs.GetLength(0);
                         for (int k = 0; k < length; k++) {
@@ -169,7 +173,7 @@ namespace FOTON_FS_Printer {
                 for (int i = 0; i < cfg.ExDBList.Count; i++) {
                     int len = cfg.ExDBList[i].TableList.Count;
                     for (int j = 0; j < len; j++) {
-                        string TableName = cfg.ExDBList[i].TableList[j];
+                        string TableName = cfg.ExDBList[i].TableList[j][0];
                         if (cfg.DB.VehicleInfoList.Contains(TableName)) {
                             string[] col = db.GetTableColumns(TableName, i);
                             Dictionary<string, string> dicInfo = new Dictionary<string, string> {
@@ -217,9 +221,12 @@ namespace FOTON_FS_Printer {
         private void ListBox1_DoubleClick(object sender, EventArgs e) {
             if (listBox1.SelectedItem != null) {
                 string VIN = listBox1.SelectedItem.ToString();
+                log.TraceInfo(">>>> Ver: " + fileVer.AssemblyVersion.ToString() + ", " + (cfg.Main.NewTestLine > 0 ? "new test line" : "old test line") + ", " + cfg.DB.ColumnConfig);
+                log.TraceInfo(">>>> Get Vehicle Result on manual, VIN: " + VIN);
                 Dictionary<string, string> dic = db.GetVehicleResult(VIN);
                 if (dic.Count > 0) {
                     report.WriteReport(VIN, dic);
+                    log.TraceInfo(">>>> Show Report File on manual, VIN: " + VIN);
                     Process.Start(report.GetReportFile(VIN));
                 } else {
                     MessageBox.Show("该VIN号车辆无检测结果数据！", "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -245,8 +252,8 @@ namespace FOTON_FS_Printer {
             for (int i = 0; i < cfg.ExDBList.Count; i++) {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
-                    if (cfg.ExDBList[i].TableList[j] == "ABS_Valve") {
-                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i, "ID");
+                    if (cfg.ExDBList[i].TableList[j][0] == "ABS_Valve") {
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j][0], "Passed", "VIN", VIN, i, cfg.ExDBList[i].TableList[j][1]);
                         if (rs != null) {
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
@@ -254,8 +261,8 @@ namespace FOTON_FS_Printer {
                                 valvePassed = result;
                             }
                         }
-                    } else if (cfg.ExDBList[i].TableList[j] == "Static_ABS") {
-                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j], "Passed", "VIN", VIN, i, "ID");
+                    } else if (cfg.ExDBList[i].TableList[j][0] == "Static_ABS") {
+                        rs = db.GetRecordsOneCol(cfg.ExDBList[i].TableList[j][0], "Passed", "VIN", VIN, i, cfg.ExDBList[i].TableList[j][1]);
                         if (rs != null) {
                             int rowNum = rs.GetLength(0);
                             if (rowNum > 0) {
