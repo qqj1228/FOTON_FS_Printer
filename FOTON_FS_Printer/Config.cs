@@ -217,7 +217,7 @@ namespace FOTON_FS_Printer {
         }
 
         /// <summary>
-        /// 从"./LastID.txt"中读取LastID值，必须在LoadConfig()之后调用
+        /// 从"./config/LastID.txt"中读取LastID值，必须在LoadConfig()之后调用
         /// </summary>
         /// <returns></returns>
         void LoadLastID() {
