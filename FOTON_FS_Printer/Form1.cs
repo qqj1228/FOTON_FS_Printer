@@ -54,7 +54,6 @@ namespace FOTON_FS_Printer {
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j][0] == cfg.DB.LastWorkStation) {
                         string[,] newVINs = db.GetNewVIN(cfg.ExDBList[i].TableList[j][0], i, null);
-                        Thread.Sleep(10000);
                         if (newVINs != null && newVINs.Length > 0) {
                             this.label_DB_Status.Text = "【与数据库连接正常】";
                             this.label_DB_Status.ForeColor = Color.Black;

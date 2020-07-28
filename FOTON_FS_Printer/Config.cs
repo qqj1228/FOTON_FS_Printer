@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -53,10 +54,12 @@ namespace FOTON_FS_Printer {
             this.ConfigFile = strConfigFile;
             LoadConfig();
             LoadColumnConfig();
+            LoadLastID();
         }
 
         ~Config() {
-            SaveConfig();
+            //SaveConfig();
+            SaveLastID();
         }
 
         void LoadConfig() {
@@ -202,6 +205,38 @@ namespace FOTON_FS_Printer {
                 Console.WriteLine("ERROR: " + e.Message);
                 Console.ResetColor();
                 Log.TraceError(e.Message);
+            }
+        }
+
+        void SaveLastID() {
+            using (StreamWriter sw = new StreamWriter("./config/LastID.txt")) {
+                for (int i = 0; i < ExDBList.Count; i++) {
+                    sw.WriteLine(string.Format("{0},{1}", i, ExDBList[i].LastID));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 从"./LastID.txt"中读取LastID值，必须在LoadConfig()之后调用
+        /// </summary>
+        /// <returns></returns>
+        void LoadLastID() {
+            try {
+                using (StreamReader sr = new StreamReader("./config/LastID.txt")) {
+                    string line;
+                    while ((line = sr.ReadLine()) != null) {
+                        string[] strIDs = line.Split(',');
+                        int index = int.Parse(strIDs[0]);
+                        int iLastID = int.Parse(strIDs[1]);
+                        ExportDBConfig TempExDB = ExDBList[index];
+                        TempExDB.LastID = iLastID;
+                        ExDBList[index] = TempExDB;
+                    }
+                }
+            } catch (Exception ex) {
+                if (ex.GetType() != typeof(FileNotFoundException)) {
+                    throw;
+                }
             }
         }
     }
