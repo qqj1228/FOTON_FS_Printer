@@ -378,21 +378,23 @@ namespace FOTON_FS_Printer {
             return strArr;
         }
 
-        public string[,] GetNewRecords(string strTableName, int index, string orderby) {
-            string strLastID;
-            if (cfg.ExDBList[index].LastID >= 0) {
-                strLastID = cfg.ExDBList[index].LastID.ToString();
+        /// <summary>
+        /// 获取最新的表记录，返回[ID, VIN]数组
+        /// </summary>
+        /// <param name="strTableName"></param>
+        /// <param name="index"></param>
+        /// <param name="orderby"></param>
+        /// <returns></returns>
+        public string[,] GetNewVIN(string strTableName, int index, string orderby) {
+            string strSQL;
+            if (orderby != null && orderby.Length > 0) {
+                strSQL = "select top (1) " + orderby + ", VIN from " + strTableName + " order by " + orderby + " desc";
             } else {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(string.Format("ERROR: The {0}.LastID < 0", cfg.ExDBList[index].Name));
-                Console.ResetColor();
-                log.TraceError(string.Format("The {0}.LastID < 0", cfg.ExDBList[index].Name));
-                return new string[,] { { "" }, { "" } };
+                strSQL = "select top (1) ID, VIN from " + strTableName + "  order by ID desc";
             }
-            string strSQL = "select * from " + strTableName + " where ID > '" + strLastID + "' order by " + orderby;
             log.TraceInfo("SQL: " + strSQL);
             string[,] strArr = SelectDB(strSQL, index);
-            log.TraceInfo(GetDBResultLog(strTableName, true, index, strArr));
+            log.TraceInfo(GetDBResultLog(strTableName, false, index, strArr));
             return strArr;
         }
 
@@ -474,7 +476,16 @@ namespace FOTON_FS_Printer {
             return dic;
         }
 
-        private string GetDBResultLog(string strTableName, bool bShowCol, int index, string[,] results) {
+        /// <summary>
+        /// 返回用于输出log记录的查询结果字符串
+        /// </summary>
+        /// <param name="strTableName">表名</param>
+        /// <param name="bShowCol">是否输出字段名</param>
+        /// <param name="index">数据库索引</param>
+        /// <param name="results">查询结果</param>
+        /// <param name="iMaxQTY">最大输出记录数量，若小于0则表示不限制输出数量</param>
+        /// <returns></returns>
+        private string GetDBResultLog(string strTableName, bool bShowCol, int index, string[,] results, int iMaxQTY = -1) {
             string strRet = "Connection string: " + m_strConn[index] + Environment.NewLine;
             if (bShowCol) {
                 string[] cols = GetTableColumns(strTableName, index);
@@ -483,7 +494,14 @@ namespace FOTON_FS_Printer {
                 }
                 strRet += Environment.NewLine;
             }
-            for (int rowNum = 0; rowNum < results.GetLength(0); rowNum++) {
+            int iStart = 0;
+            if (iMaxQTY >= 0) {
+                iStart = results.GetLength(0) - iMaxQTY;
+                if (iStart < 0) {
+                    iStart = 0;
+                }
+            }
+            for (int rowNum = iStart; rowNum < results.GetLength(0); rowNum++) {
                 for (int colNum = 0; colNum < results.GetLength(1); colNum++) {
                     strRet += results[rowNum, colNum] + ",";
                 }

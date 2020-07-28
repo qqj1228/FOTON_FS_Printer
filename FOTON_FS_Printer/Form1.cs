@@ -8,6 +8,7 @@ using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using static FOTON_FS_Printer.Config;
 
@@ -19,7 +20,7 @@ namespace FOTON_FS_Printer {
         readonly MainFileVersion fileVer;
         readonly SerialPortClass sp;
         readonly ReportClass report;
-        readonly Timer timer;
+        readonly System.Windows.Forms.Timer timer;
 
         public Form1() {
             InitializeComponent();
@@ -30,7 +31,7 @@ namespace FOTON_FS_Printer {
             this.label_Version.Text = "Ver: " + fileVer.AssemblyVersion.ToString() + ", 用于" + (cfg.Main.NewTestLine > 0 ? "新检测线" : "老检测线");
             report = new ReportClass(cfg, log, 100);
             log.TraceInfo("================ Start Application Ver: " + fileVer.AssemblyVersion.ToString() + " ==================");
-            timer = new Timer();
+            timer = new System.Windows.Forms.Timer();
             timer.Tick += new EventHandler(TimerEventProcessor);
             timer.Interval = cfg.Main.Interval * 1000;
             timer.Start();
@@ -52,53 +53,42 @@ namespace FOTON_FS_Printer {
                 int len = cfg.ExDBList[i].TableList.Count;
                 for (int j = 0; j < len; j++) {
                     if (cfg.ExDBList[i].TableList[j][0] == cfg.DB.LastWorkStation) {
-                        string[,] rs = db.GetNewRecords(cfg.ExDBList[i].TableList[j][0], i, cfg.ExDBList[i].TableList[j][1]);
-                        if (rs != null) {
+                        string[,] newVINs = db.GetNewVIN(cfg.ExDBList[i].TableList[j][0], i, null);
+                        Thread.Sleep(10000);
+                        if (newVINs != null && newVINs.Length > 0) {
                             this.label_DB_Status.Text = "【与数据库连接正常】";
                             this.label_DB_Status.ForeColor = Color.Black;
 
-                            int rowNum = rs.GetLength(0);
-                            if (rowNum > 0) {
-                                string[] col = db.GetTableColumns(cfg.ExDBList[i].TableList[j][0], i);
-                                // 计算ID, VIN字段索引值
-                                int IDIndex = 0;
-                                int VINIndex = 1;
-                                int iCount = 0;
-                                for (int k = 0; k < col.Length && iCount <= 2; k++) {
-                                    if (col[k] == cfg.ColumnDic["ID"]) {
-                                        IDIndex = k;
-                                        ++iCount;
-                                    } else if (col[k] == cfg.ColumnDic["VIN"]) {
-                                        VINIndex = k;
-                                        ++iCount;
-                                    }
-                                }
+                            int.TryParse(newVINs[0, 0], out int iNewID);
+                            string strVIN = newVINs[0, 1];
+                            log.TraceInfo(">>>> New Vehicle ID: " + newVINs[0, 0] + ", VIN: " + strVIN + ", LastID: " + cfg.ExDBList[i].LastID.ToString());
+                            if (iNewID > cfg.ExDBList[i].LastID) {
                                 // 将最新记录的VIN号填入UI中
-                                this.textBoxVIN.Text = rs[rowNum - 1, VINIndex];
-                                string[] vi = db.GetVehicleInfo(rs[rowNum - 1, VINIndex]);
+                                this.textBoxVIN.Text = strVIN;
+                                log.TraceInfo(">>>> Get Vehicle Infomation on timer, VIN: " + strVIN);
+                                string[] vi = db.GetVehicleInfo(strVIN);
                                 this.textBoxVehicleCode.Text = vi[0];
                                 this.textBoxVehicleType.Text = vi[1];
                                 this.textBoxEngineCode.Text = vi[2];
 
+                                // 修改LastID值
+                                ExportDBConfig TempExDB = cfg.ExDBList[i];
+                                TempExDB.LastID = iNewID;
+                                cfg.ExDBList[i] = TempExDB;
+
                                 // 若vi项均不为空的话就自动显示检测结果报表
                                 if (vi[0].Length > 0 && vi[1].Length > 0 && vi[2].Length > 0) {
-                                    string VIN = rs[rowNum - 1, VINIndex];
                                     log.TraceInfo(">>>> Ver: " + fileVer.AssemblyVersion.ToString() + ", " + (cfg.Main.NewTestLine > 0 ? "new test line" : "old test line") + ", " + cfg.DB.ColumnConfig);
-                                    log.TraceInfo(">>>> Get Vehicle Result on timer, VIN: " + VIN);
-                                    Dictionary<string, string> dic = db.GetVehicleResult(VIN);
+                                    log.TraceInfo(">>>> Get Vehicle Result on timer, VIN: " + strVIN);
+                                    Dictionary<string, string> dic = db.GetVehicleResult(strVIN);
                                     if (dic.Count > 0) {
-                                        report.WriteReport(VIN, dic);
-                                        log.TraceInfo(">>>> Show Report File on timer, VIN: " + VIN);
-                                        Process.Start(report.GetReportFile(VIN));
+                                        report.WriteReport(strVIN, dic);
+                                        log.TraceInfo(">>>> Show Report File on timer, VIN: " + strVIN);
+                                        Process.Start(report.GetReportFile(strVIN));
                                     } else {
                                         MessageBox.Show("该VIN号车辆无检测结果数据！", "出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
-                                // 修改LastID值
-                                ExportDBConfig TempExDB = cfg.ExDBList[i];
-                                int.TryParse(rs[rowNum - 1, IDIndex], out int result);
-                                TempExDB.LastID = result;
-                                cfg.ExDBList[i] = TempExDB;
                             }
                         } else {
                             this.label_DB_Status.Text = "【与数据库连接出错】";
@@ -211,6 +201,7 @@ namespace FOTON_FS_Printer {
         private void ListBox1_SelectedIndexChanged(object sender, EventArgs e) {
             if (listBox1.SelectedItem != null) {
                 string VIN = listBox1.SelectedItem.ToString();
+                log.TraceInfo(">>>> Get Vehicle Infomation on timer, VIN: " + VIN);
                 string[] vi = db.GetVehicleInfo(VIN);
                 this.textBoxVehicleCode.Text = vi[0];
                 this.textBoxVehicleType.Text = vi[1];
